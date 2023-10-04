@@ -6,6 +6,7 @@ use App\Models\LichChieu;
 use App\Models\Phim;
 use App\Models\Phong;
 use Validate;
+use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
 
@@ -23,7 +24,52 @@ class LichChieuController extends Controller
     }
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
+            'idphong' => [
+                'required',                                        // Không được bỏ trống
+                'integer',                                         // Là số nguyên
+                'digits_between:1,3',                              // Có độ dài từ 1 đến 3 chữ số
+                'regex:/^[1-9][0-9]{0,2}$/',                        // Không chứa ký tự đặc biệt và không chứa a-z
+                'exists:phong,id',
+            ],
+            'idphim' => [
+                'required',                                        // Không được bỏ trống
+                'integer',                                         // Là số nguyên
+                'digits_between:1,3',                              // Có độ dài từ 1 đến 3 chữ số
+                'regex:/^[1-9][0-9]{0,2}$/',                        // Không chứa ký tự đặc biệt và không chứa a-z
+                'exists:phim,id',
+            ],
+            'ngaychieu' => 'required|date_format:Y-m-d',//ô nhập phải là mm/dd/yyyy
+            'giochieu' => 'required|date_format:H:i',
+            'gioketthuc' => 'required|date_format:H:i|after:giochieu',
+        ];
+        
+        $messages = [
+            'idphong.required'=>'Mã phòng không được bỏ trống',
+            'idphong.exists'=>'Không tồn tại phòng',
+            'idphong.integer'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphong.digits_between'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphong.regex'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.required'=>'Mã phòng không được bỏ trống',
+            'idphim.integer'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.digits_between'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.regex'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.exists'=>'Không tồn tại phim',
+            'ngaychieu.required'=>'Ngày chiếu không được bỏ trống',
+            'ngaychieu.date_format'=>'Ngày không hợp lệ',
+            'giochieu.required'=>'Giờ chiếu không được bỏ trống',
+            'gioketthuc.required'=>'Giờ kết thúc không được bỏ trống',
+            'giochieu.date_format'=>'Giờ chiếu không hợp lệ',
+            'gioketthuc.date_format'=>'Giờ kết thúc không hợp lệ',
+            'gioketthuc.after'=>'Giờ chiếu phải nhỏ hơn giờ kết thúc',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            // Xử lý khi validate không thành công
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        /*$request->validate([
             'idphong' => [
                 'required',                                        // Không được bỏ trống
                 'integer',                                         // Là số nguyên
@@ -58,21 +104,20 @@ class LichChieuController extends Controller
             'giochieu.date_format'=>'Giờ chiếu không hợp lệ',
             'gioketthuc.date_format'=>'Giờ kết thúc không hợp lệ',
             'gioketthuc.after'=>'Giờ chiếu phải nhỏ hơn giờ kết thúc',
-    ]);
+    ]);*/
         $lichchieu = new LichChieu;
         $lichchieu->idphong = $request->idphong;
         $lichchieu->idphim = $request->idphim;
         $lichchieu->ngaychieu = $request->ngaychieu;
         $lichchieu->giochieu = $request->giochieu;
         $lichchieu->gioketthuc = $request->gioketthuc;
-        
         // Kiểm tra trùng idphong và ngaychieu
         $existingRecords = LichChieu::where('idphong', $lichchieu->idphong)
             ->where('ngaychieu', $lichchieu->ngaychieu)
             ->get();
-        
+
         $isValid = true;
-        
+
         foreach ($existingRecords as $record) {
             if (($record->giochieu >= $lichchieu->giochieu && $record->giochieu <= $lichchieu->gioketthuc) ||
                 ($record->gioketthuc >= $lichchieu->giochieu && $record->gioketthuc <= $lichchieu->gioketthuc) ||
@@ -89,7 +134,8 @@ class LichChieuController extends Controller
         } else {
             return redirect()->back()->with('message', 'Giờ chiếu không hợp lệ');
         }
-        /*
+    } 
+    /*
         $lichchieu=new LichChieu;
         $lichchieu->idphong=$request->idphong;
         $lichchieu->idphim=$request->idphim;
@@ -100,7 +146,6 @@ class LichChieuController extends Controller
         //return redirect()->route('danhsachlichchieu');
         return redirect()->back()->with('message', 'Thêm thành công');
         */
-    }
     public function edit($id)
     {
         $phong=Phong::all();
@@ -110,8 +155,53 @@ class LichChieuController extends Controller
     }
     public function update(Request $request,$id)
     {
+        $rules = [
+            'idphong' => [
+                'required',                                        // Không được bỏ trống
+                'integer',                                         // Là số nguyên
+                'digits_between:1,3',                              // Có độ dài từ 1 đến 3 chữ số
+                'regex:/^[1-9][0-9]{0,2}$/',                        // Không chứa ký tự đặc biệt và không chứa a-z
+                'exists:phong,id',
+            ],
+            'idphim' => [
+                'required',                                        // Không được bỏ trống
+                'integer',                                         // Là số nguyên
+                'digits_between:1,3',                              // Có độ dài từ 1 đến 3 chữ số
+                'regex:/^[1-9][0-9]{0,2}$/',                        // Không chứa ký tự đặc biệt và không chứa a-z
+                'exists:phim,id',
+            ],
+            'ngaychieu' => 'required|date_format:Y-m-d',//ô nhập phải là mm/dd/yyyy
+            'giochieu' => 'required|date_format:H:i',
+            'gioketthuc' => 'required|date_format:H:i|after:giochieu',
+        ];
+        
+        $messages = [
+            'idphong.required'=>'Mã phòng không được bỏ trống',
+            'idphong.exists'=>'Không tồn tại phòng',
+            'idphong.integer'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphong.digits_between'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphong.regex'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.required'=>'Mã phòng không được bỏ trống',
+            'idphim.integer'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.digits_between'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.regex'=>'Mã phòng phải là số nguyên dương từ 1-999',
+            'idphim.exists'=>'Không tồn tại phim',
+            'ngaychieu.required'=>'Ngày chiếu không được bỏ trống',
+            'ngaychieu.date_format'=>'Ngày không hợp lệ',
+            'giochieu.required'=>'Giờ chiếu không được bỏ trống',
+            'gioketthuc.required'=>'Giờ kết thúc không được bỏ trống',
+            'giochieu.date_format'=>'Giờ chiếu không hợp lệ',
+            'gioketthuc.date_format'=>'Giờ kết thúc không hợp lệ',
+            'gioketthuc.after'=>'Giờ chiếu phải nhỏ hơn giờ kết thúc',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-          $validated = $request->validate([
+        if ($validator->fails()) {
+            // Xử lý khi validate không thành công
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        /*
+          $request->validate([
             'idphong' => [
                 'required',                                        // Không được bỏ trống
                 'integer',                                         // Là số nguyên
@@ -146,7 +236,7 @@ class LichChieuController extends Controller
             'giochieu.date_format'=>'Giờ chiếu không hợp lệ',
             'gioketthuc.date_format'=>'Giờ kết thúc không hợp lệ',
             'gioketthuc.after'=>'Giờ chiếu phải nhỏ hơn giờ kết thúc',
-    ]);
+    ]);*/
         
         $lichchieu = LichChieu::find($id);
         $lichchieu->idphong=$request->idphong;
@@ -203,8 +293,5 @@ class LichChieuController extends Controller
             return redirect()->route('danhsachlichchieu')->with('message', 'Lịch chiếu không tồn tại');
 
         }
-        
-
-        //return redirect()->back()->with('message2', 'thongbao');
     }
 }
