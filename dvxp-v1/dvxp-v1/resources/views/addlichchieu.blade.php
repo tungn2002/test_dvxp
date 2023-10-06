@@ -45,7 +45,7 @@
                         @endisset
                     </select>
                     <label for="">Ngày chiếu</label>
-                    <input type="date" name="ngaychieu" class="form-control">
+                    <input type="text" name="ngaychieu" class="form-control">
                     <label for="">Giờ chiếu</label>
                     <input type="text" name="giochieu" class="form-control">
                     <label for="">Giờ kết thúc</label>
@@ -54,6 +54,11 @@
                     @if (\Session::has('message'))
                         <div class="alert alert-success">
                         <strong>{!! \Session::get('message') !!}</strong>
+                        </div>
+                    @endif
+                    @if (\Session::has('message2'))
+                        <div class="alert alert-danger">
+                        <strong>{!! \Session::get('message2') !!}</strong>
                         </div>
                     @endif
                     @if ($errors->any())
