@@ -38,13 +38,14 @@ class LichChieuController extends Controller
         $phim = LichChieu::find($request->idphim);
         if(!$phong||!$phim){
             return redirect()->back()->with('message2', 'Phòng hoặc phim không tồn tại.');
-
         }
-        if (!preg_match('/^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/', $request->ngaychieu)) {
+        if (validator()->make($request->all(), ['ngaychieu' => [ 'date_format:d/m/Y']
+        ])->fails()) {
             return redirect()->back()->with('message2', 'Ngày không hợp lệ');
         }
 
-        if (!preg_match('/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/', $request->giochieu) || !preg_match('/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/', $request->gioketthuc)) {
+        if (validator()->make($request->all(), ['giochieu' => ['date_format:H:i']])->fails()
+        || validator()->make($request->all(), ['gioketthuc' => [ 'date_format:H:i']])->fails()) {
             return redirect()->back()->with('message2', 'Giờ chiếu hoặc giờ kết thúc không hợp lệ');
         }
 
