@@ -1,0 +1,11 @@
+
+php artisan migrate --path=/database/migrations/2023_09_07_020112_create_phim_table.php
+php artisan migrate --path=/database/migrations/2023_09_07_020116_create_phong_table.php
+php artisan migrate --path=/database/migrations/2023_09_07_024446_create_chucvu_table.php
+php artisan migrate --path=/database/migrations/2023_09_07_065320_create_user_table.php
+php artisan migrate --path=/database/migrations/2023_09_07_020125_create_lichchieu_table.php
+php artisan migrate --path=/database/migrations/2023_09_13_144743_create_ghe_table.php
+php artisan migrate --path=/database/migrations/2023_09_13_144841_create_ve_table.php
+
+
+php artisan db:seed

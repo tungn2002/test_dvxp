@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('noidung');
             $table->string('daodien');
             $table->string('image');
+            $table->time('thoiluong');
             $table->timestamps();
         });
     }

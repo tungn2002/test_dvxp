@@ -51,6 +51,10 @@
                         <label for="">Ảnh</label>
                         <input name="image" type="file" class="form-control" value="{{$phim->image}}">
                     </div>
+                    <div>
+                        <label for="">Thời lượng</label>
+                        <input name="thoiluong" type="text" class="form-control" value="{{$phim->thoiluong}}">
+                    </div>
                     @endisset
 
                     <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Sửa vé</button>

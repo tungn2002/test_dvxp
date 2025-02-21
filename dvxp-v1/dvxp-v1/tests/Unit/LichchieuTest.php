@@ -17,7 +17,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => '01/01/2023',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -41,7 +40,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => '01/01/2023',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -65,7 +63,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => '01/01/2023',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -89,7 +86,6 @@ class LichchieuTest extends TestCase
             'idphim' => 'abc',
             'ngaychieu' => '01/01/2023',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -113,7 +109,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => '01/01/2023',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -137,7 +132,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => 'abc',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -153,7 +147,7 @@ class LichchieuTest extends TestCase
         $this->assertEquals('Ngày không hợp lệ', $message);
 
     }
-    public function test_InvalidGiochieuOrGioketthuc(): void
+    public function test_InvalidGiochieu(): void
     {
         // Chuẩn bị dữ liệu giả lập
         $request = new Request([
@@ -161,7 +155,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => '01/01/2023',
             'giochieu' => 'abc',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -174,32 +167,9 @@ class LichchieuTest extends TestCase
         $message = $response->getSession()->get('message2');
 
         // Kiểm tra kết quả
-        $this->assertEquals('Giờ chiếu hoặc giờ kết thúc không hợp lệ', $message);
+        $this->assertEquals('Giờ chiếu không hợp lệ', $message);
     }
 
-    public function test_InvalidGiochieuAndGioketthuc(): void
-    {
-        // Chuẩn bị dữ liệu giả lập
-        $request = new Request([
-            'idphong' => '1',
-            'idphim' => '1',
-            'ngaychieu' => '01/01/2023',
-            'giochieu' => '12:00',
-            'gioketthuc' => '10:00',
-        ]);
-
-        // Tạo một đối tượng LichchieuController
-        $controller = new LichchieuController();
-
-        // Thực hiện gọi phương thức store trên đối tượng LichchieuController với dữ liệu giả lập
-        $response = $controller->store($request);
-
-        // Lấy thông báo từ session trong RedirectResponse
-        $message = $response->getSession()->get('message2');
-
-        // Kiểm tra kết quả
-        $this->assertEquals('Giờ chiếu phải nhỏ hơn giờ kết thúc', $message);
-    }
     public function test_TrungGiochieu(): void
     {
         // Chuẩn bị dữ liệu giả lập
@@ -208,7 +178,6 @@ class LichchieuTest extends TestCase
             'idphim' => '1',
             'ngaychieu' => '01/01/2023',
             'giochieu' => '09:00',
-            'gioketthuc' => '10:00',
         ]);
 
         // Tạo một đối tượng LichchieuController
@@ -222,6 +191,5 @@ class LichchieuTest extends TestCase
 
         // Kiểm tra kết quả
         $this->assertEquals('Phòng đang được sử dụng vào thời gian này', $message);
-
     }
 }

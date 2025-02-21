@@ -24,7 +24,7 @@ class LichChieuController extends Controller
     }
     public function store(Request $request)
     {
-        if($request->idphong==""||$request->idphim==""||$request->ngaychieu==""||$request->giochieu==""||$request->gioketthuc==""){
+        if($request->idphong==""||$request->idphim==""||$request->ngaychieu==""||$request->giochieu==""){
             return redirect()->back()->with('message2', 'Phải nhập đủ thông tin');
         }
         
@@ -34,8 +34,8 @@ class LichChieuController extends Controller
         if (!is_int((int) $request->idphim) || $request->idphim<1|| $request->idphim>999) {
             return redirect()->back()->with('message2', 'Mã phim phải là số nguyên dương từ 1-999');
         }
-        $phong = LichChieu::find($request->idphong);
-        $phim = LichChieu::find($request->idphim);
+        $phong = Phong::find($request->idphong);
+        $phim = Phim::find($request->idphim);
         if(!$phong||!$phim){
             return redirect()->back()->with('message2', 'Phòng hoặc phim không tồn tại.');
         }
@@ -44,32 +44,38 @@ class LichChieuController extends Controller
             return redirect()->back()->with('message2', 'Ngày không hợp lệ');
         }
 
-        if (validator()->make($request->all(), ['giochieu' => ['date_format:H:i']])->fails()
-        || validator()->make($request->all(), ['gioketthuc' => [ 'date_format:H:i']])->fails()) {
-            return redirect()->back()->with('message2', 'Giờ chiếu hoặc giờ kết thúc không hợp lệ');
+        if (validator()->make($request->all(), ['giochieu' => ['date_format:H:i']])->fails()) {
+            return redirect()->back()->with('message2', 'Giờ chiếu không hợp lệ');
+        }
+        $tong_gio = (int)explode(":",$request->giochieu)[0] +(int)explode(":",Phim::find($request->idphim)->thoiluong)[0] ;
+        $tong_phut =(int)explode(":",$request->giochieu)[1] +(int)explode(":",Phim::find($request->idphim)->thoiluong)[1];
+        if ($tong_phut >= 60) {
+            $tong_gio += 1;
+            $tong_phut = $tong_phut -60;
         }
 
-        if ( $request->giochieu >=  $request->gioketthuc) {
-            return redirect()->back()->with('message2', 'Giờ chiếu phải nhỏ hơn giờ kết thúc');
+        if ( $tong_gio >= 24) {
+            return redirect()->back()->with('message2', 'Giờ chiếu phim chỉ được giới hạn trong một ngày');
         }
+        $gioketthuc = sprintf("%02d:%02d", $tong_gio, $tong_phut);
         $existingRecords = LichChieu::where('idphong', $request->idphong)
         ->where('ngaychieu', date('Y-m-d', strtotime(str_replace('/', '-', $request->ngaychieu))))
-        ->where(function ($query) use ($request) {
-            $query->where(function ($q) use ($request) {
+        ->where(function ($query) use ($request,$gioketthuc) {
+            $query->where(function ($q) use ($request,$gioketthuc) {
                 $q->where('giochieu', '>=', $request->giochieu)
-                    ->where('giochieu', '<=', $request->gioketthuc);
+                    ->where('giochieu', '<=', $gioketthuc);
             })
-            ->orWhere(function ($q) use ($request) {
+            ->orWhere(function ($q) use ($request,$gioketthuc) {
                 $q->where('gioketthuc', '>=', $request->giochieu)
-                    ->where('gioketthuc', '<=', $request->gioketthuc);
+                    ->where('gioketthuc', '<=', $gioketthuc);
             })
             ->orWhere(function ($q) use ($request) {
                 $q->where('giochieu', '<=', $request->giochieu)
                     ->where('gioketthuc', '>=', $request->giochieu);
             })
-            ->orWhere(function ($q) use ($request) {
-                $q->where('giochieu', '<=', $request->gioketthuc)
-                    ->where('gioketthuc', '>=', $request->gioketthuc);
+            ->orWhere(function ($q) use ($request,$gioketthuc) {
+                $q->where('giochieu', '<=', $gioketthuc)
+                    ->where('gioketthuc', '>=', $gioketthuc);
             });
         })->get();
         if ($existingRecords->isEmpty()) { 
@@ -78,7 +84,7 @@ class LichChieuController extends Controller
             $lichchieu->idphim = $request->idphim;
             $lichchieu->ngaychieu = date('Y-m-d', strtotime(str_replace('/', '-', $request->ngaychieu)));
             $lichchieu->giochieu = $request->giochieu;
-            $lichchieu->gioketthuc = $request->gioketthuc;
+            $lichchieu->gioketthuc = $gioketthuc;
             $lichchieu->save();
             return redirect()->back()->with('message', 'Thêm thành công');
         } else {

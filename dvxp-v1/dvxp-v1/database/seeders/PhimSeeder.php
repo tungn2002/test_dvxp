@@ -19,7 +19,8 @@ class PhimSeeder extends Seeder
             'theloai'=>'hanh dong',
             'noidung'=>'0wqidjdwiqdwiojdioqd',
             'daodien'=>'Khanh',
-            'image'=>'images/gNRNBBKaDCqtaWAXOF0TGKPQqp4ucIjxT4LJeUZG.jpg'
+            'image'=>'images/gNRNBBKaDCqtaWAXOF0TGKPQqp4ucIjxT4LJeUZG.jpg',
+            'thoiluong'=>'2:00'
         ]);
         DB::table('phim')->insert([
             'id'=>'2',
@@ -27,7 +28,8 @@ class PhimSeeder extends Seeder
             'theloai'=>'kinh di',
             'noidung'=>'wddqjqdjwqoidwq',
             'daodien'=>'Nam',
-            'image'=>'images/gNRNBBKaDCqtaWAXOF0TGKPQqp4ucIjxT4LJeUZG.jpg'
+            'image'=>'images/gNRNBBKaDCqtaWAXOF0TGKPQqp4ucIjxT4LJeUZG.jpg',
+            'thoiluong'=>'2:00'
         ]);
     }
 }

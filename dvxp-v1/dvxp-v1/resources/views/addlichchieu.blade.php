@@ -37,9 +37,6 @@
                     <input type="text" name="ngaychieu" class="form-control">
                     <label for="">Giờ chiếu</label>
                     <input type="text" name="giochieu" class="form-control">
-                    <label for="">Giờ kết thúc</label>
-                    <input type="text" name="gioketthuc" class="form-control">
-
                     @if (\Session::has('message'))
                         <div class="alert alert-success">
                         <strong>{!! \Session::get('message') !!}</strong>

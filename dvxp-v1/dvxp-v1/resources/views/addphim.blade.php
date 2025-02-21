@@ -49,6 +49,10 @@
                         <label for="">Ảnh</label>
                         <input name="image" type="file" class="form-control">
                     </div>
+                    <div>
+                        <label for="">Thời lượng</label>
+                        <input name="thoiluong" type="text" class="form-control">
+                    </div>
                     @if (\Session::has('message'))
                         <div class="alert alert-success">
                         <strong>{!! \Session::get('message') !!}</strong>

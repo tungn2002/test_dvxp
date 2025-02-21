@@ -16,6 +16,7 @@ class Phim extends Model
         'theloai',
         'noidung',
         'daodien',
-        'image'
+        'image',
+        'thoiluong'
     ];
 }

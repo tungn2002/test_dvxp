@@ -36,6 +36,7 @@
                             <th style="width: 500px;">Nội dung</th>
                             <th>Đạo diễn</th>
                             <th>Ảnh</th>
+                            <th>Thời lượng</th>
                             <th>Tùy chọn</th>
                         </tr>
                     </thead>
@@ -50,6 +51,7 @@
                                 <td>{{$item->noidung}}</td>
                                 <td>{{$item->daodien}}</td>
                                 <td>{{substr($item->image, -10)}}</td>
+                                <td>{{$item->thoiluong}}</td>
                                 <td>
                                 <a href="{{ url('suaphim/id='.$item->id) }}" class="btn btn-primary">Sửa</a>
                                     

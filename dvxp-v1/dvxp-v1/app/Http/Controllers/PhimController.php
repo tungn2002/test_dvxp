@@ -34,6 +34,7 @@ class PhimController extends Controller
         $phim->noidung=$request->noidung;
         $phim->daodien=$request->daodien;
         $phim->image=$imageName;
+        $phim->thoiluong=$request->thoiluong;
         $phim->save();
         //return redirect()->route('danhsachphim');
         return redirect()->back()->with('message', 'Thêm thành công');
@@ -53,6 +54,7 @@ class PhimController extends Controller
         $phim->noidung=$request->noidung;
         $phim->daodien=$request->daodien;
         $phim->image=$imageName;
+        $phim->thoiluong=$request->thoiluong;
         $phim->update();
         return redirect()->route('danhsachphim')->with('message', 'Sửa thành công');
         //return redirect()->back()->with('message2', 'thongbao');
